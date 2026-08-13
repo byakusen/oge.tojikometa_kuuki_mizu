@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>とじこめた空気や水｜4年 理科</title>
+<style>
+:root{
+  --paper:#FBF6EC;
+  --ink:#2E3338;
+  --sub:#6B7580;
+  --orange:#EE7800;
+  --orange-d:#D26400;
+  --green:#8CC63F;
+  --green-d:#6DA524;
+  --blue:#1F8FCF;
+  --blue-l:#BFE2F5;
+  --pink:#F2809A;
+  --line:#E3DACA;
+  --card:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN","Yu Gothic",YuGothic,"Meiryo",sans-serif;
+  background:var(--paper); color:var(--ink);
+  overflow:hidden; -webkit-font-smoothing:antialiased;
+}
+.app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ---------- header ---------- */
+header{
+  flex:none;display:flex;align-items:flex-end;gap:clamp(10px,2vw,26px);
+  padding:clamp(8px,1.4vh,16px) clamp(12px,2vw,28px) 0;
+  border-bottom:3px solid var(--orange);
+  background:linear-gradient(180deg,#fff,rgba(255,255,255,0));
+}
+.brand{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;white-space:nowrap}
+.brand .num{
+  background:var(--green);color:#fff;font-weight:800;
+  width:clamp(26px,3.4vh,36px);height:clamp(26px,3.4vh,36px);border-radius:50%;
+  display:grid;place-items:center;font-size:clamp(14px,2vh,20px)
+}
+.brand h1{font-size:clamp(17px,2.9vh,27px);letter-spacing:.04em;font-weight:800}
+nav{display:flex;gap:5px;flex:1;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+.tab{
+  flex:none;border:none;cursor:pointer;font:inherit;font-weight:700;
+  background:#F0E9DA;color:var(--sub);
+  padding:clamp(8px,1.4vh,14px) clamp(12px,1.8vw,24px);
+  border-radius:12px 12px 0 0;font-size:clamp(14px,2.3vh,21px);
+  transform:translateY(3px);transition:.15s;white-space:nowrap;
+}
+.tab:hover{background:#E7DDC9;color:var(--ink)}
+.tab.on{background:var(--orange);color:#fff;transform:translateY(3px) scale(1.02)}
+.tab .t-no{opacity:.75;margin-right:5px;font-size:.85em}
+.tab:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* ---------- panels ---------- */
+main{flex:1;min-height:0;position:relative}
+.panel{
+  position:absolute;inset:0;display:none;
+  grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
+  gap:clamp(8px,1.4vw,20px);padding:clamp(8px,1.5vh,18px) clamp(12px,2vw,26px);
+}
+.panel.on{display:grid}
+.panel.wide-side{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}
+.stage{
+  min-height:0;background:var(--card);border:2px solid var(--line);border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(6px,1.2vh,14px);padding-bottom:clamp(36px,4.8vh,52px);
+  position:relative;overflow:hidden;
+}
+.stage svg{width:100%;height:100%;flex:1;min-height:0;touch-action:none;cursor:grab}
+.stage.compare{flex-direction:row;gap:clamp(8px,2.5vw,40px);align-items:stretch;justify-content:center;
+  padding-bottom:clamp(46px,5.8vh,64px)}
+.col{flex:1;min-width:0;max-width:46%;display:flex;flex-direction:column;align-items:center;gap:clamp(4px,.8vh,9px)}
+.col-title{font-size:clamp(14px,2.2vh,21px);font-weight:800;padding:3px 20px;border-radius:999px}
+.col-title.air{background:#E8F2F8;color:#2C7FBF}
+.col-title.water{background:#D3EDFA;color:#0E6FA8}
+.col-title.mix{background:#EFF6E4;color:#5C8A18}
+.toggle{display:flex;gap:3px;background:#F0E9DA;border-radius:999px;padding:3px}
+.tg{border:none;background:none;font:inherit;font-weight:800;cursor:pointer;color:var(--sub);
+  padding:3px 20px;border-radius:999px;font-size:clamp(13px,2.1vh,20px);transition:.12s}
+.tg.on{background:var(--blue);color:#fff}
+.tg:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.col-svg{flex:1;min-height:0;width:100%;display:flex}
+.mini{display:flex;align-items:center;gap:8px;width:100%;max-width:280px;
+  font-size:clamp(11px,1.7vh,16px);font-weight:700;color:var(--sub)}
+.mini .meter{height:clamp(11px,1.7vh,17px)}
+.mini-val{font-size:clamp(12px,1.9vh,18px);font-weight:700;color:var(--sub)}
+.mini-val b{color:var(--ink);font-size:1.15em;font-variant-numeric:tabular-nums}
+.stage,.stage *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.stage svg text,.stage svg tspan{pointer-events:none}
+.stage svg.grabbing{cursor:grabbing}
+.side{min-height:0;display:flex;flex-direction:column;gap:clamp(6px,1.1vh,12px);
+  overflow-y:auto;scrollbar-width:thin}
+
+.card{
+  background:var(--card);border:2px solid var(--line);border-radius:14px;
+  padding:clamp(8px,1.3vh,15px) clamp(10px,1.2vw,16px);
+}
+.card h2{
+  font-size:clamp(14px,2.2vh,21px);display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.chip{
+  background:var(--orange);color:#fff;border-radius:999px;
+  padding:3px 13px;font-size:clamp(12px,1.85vh,18px);font-weight:800;flex:none
+}
+.chip.g{background:var(--green-d)}
+.chip.b{background:var(--blue)}
+.q{font-size:clamp(14px,2.35vh,22px);font-weight:800;line-height:1.55}
+p.note{font-size:clamp(12px,1.85vh,18px);line-height:1.6;color:var(--sub)}
+
+/* meter */
+.meter-wrap{display:flex;align-items:center;gap:10px;margin-top:8px}
+.meter-label{font-size:clamp(12px,1.85vh,17px);font-weight:700;flex:none;color:var(--sub)}
+.meter{flex:1;height:clamp(14px,2.1vh,22px);background:#F0EADF;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.meter i{display:block;height:100%;width:0%;border-radius:999px;
+  background:linear-gradient(90deg,#FFD08A,var(--orange),#E4451F);transition:width .08s linear}
+.readout{display:flex;gap:clamp(7px,1.1vw,14px);margin-top:10px;flex-wrap:wrap}
+.stat{flex:1;min-width:96px;background:#FAF5EA;border:1.5px solid var(--line);border-radius:10px;padding:6px 11px}
+.stat b{display:block;font-size:clamp(11px,1.7vh,16px);color:var(--sub);font-weight:700}
+.stat span{font-size:clamp(17px,2.9vh,28px);font-weight:800;font-variant-numeric:tabular-nums}
+.stat span small{font-size:.55em;font-weight:700;margin-left:2px;color:var(--sub)}
+
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button.act{
+  font:inherit;font-weight:800;cursor:pointer;border:none;border-radius:10px;
+  padding:clamp(7px,1.3vh,13px) clamp(12px,1.6vw,20px);font-size:clamp(13px,2vh,19px);
+  background:var(--blue);color:#fff;box-shadow:0 2px 0 #1268a0;transition:.12s;
+}
+button.act:hover{filter:brightness(1.07)}
+button.act:active{transform:translateY(2px);box-shadow:none}
+button.act.ghost{background:#fff;color:var(--sub);border:2px solid var(--line);box-shadow:none}
+button.act.ghost:hover{border-color:var(--orange);color:var(--orange-d)}
+button.act:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+
+.speech{
+  background:#FFF8E8;border:2px solid #F5DFA8;border-radius:12px;
+  padding:clamp(9px,1.4vh,15px) clamp(11px,1.3vw,17px);
+  font-size:clamp(13px,2.05vh,19px);line-height:1.55;font-weight:700;min-height:0
+}
+.speech.ok{background:#F2FAE8;border-color:#C4E39A}
+
+.matome{background:#FFF3E4;border-color:#F6C58A;overflow:auto}
+.matome ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.matome li{
+  font-size:clamp(13px,2.05vh,20px);line-height:1.5;font-weight:700;
+  padding-left:21px;position:relative
+}
+.matome li::before{content:"●";position:absolute;left:0;color:var(--orange);font-size:.75em;top:.35em}
+.hidden{display:none}
+
+/* tab1 record */
+.rec{display:flex;gap:9px;align-items:center;font-size:clamp(13px,2vh,19px);font-weight:800}
+.rec em{font-style:normal;color:var(--orange-d);font-size:1.3em;font-variant-numeric:tabular-nums}
+
+/* quiz */
+.quiz{display:flex;flex-direction:column;gap:clamp(7px,1.2vh,14px);overflow:auto;padding-right:4px}
+.qcard{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:clamp(9px,1.5vh,16px)}
+.qhead{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px}
+.qhead .qt{flex:1;margin-bottom:0}
+.hint-btn{
+  flex:none;font:inherit;font-weight:800;cursor:pointer;background:#FFF3E4;color:var(--orange-d);
+  border:2px solid #F6C58A;border-radius:999px;padding:3px 14px;
+  font-size:clamp(11px,1.7vh,16px);transition:.12s
+}
+.hint-btn:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+.hint-btn:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.hintview{
+  position:absolute;inset:clamp(8px,1.6vh,20px);background:#FFF8E8;border:3px solid #F3C97E;
+  border-radius:16px;display:none;flex-direction:column;gap:clamp(10px,2vh,22px);
+  padding:clamp(16px,3.2vh,38px);overflow:auto;z-index:3
+}
+.hintview.on{display:flex}
+.hintview .hq{font-size:clamp(14px,2.3vh,23px);font-weight:800;color:var(--sub);line-height:1.5}
+.hintview .hb{font-size:clamp(16px,2.9vh,30px);font-weight:800;line-height:1.75}
+.qcard .qt{font-size:clamp(13px,2.05vh,20px);font-weight:800;margin-bottom:9px;line-height:1.45}
+.opts{display:flex;gap:7px;flex-wrap:wrap}
+.opt{
+  font:inherit;font-weight:700;cursor:pointer;border:2px solid var(--line);background:#fff;
+  border-radius:9px;padding:6px 13px;font-size:clamp(12px,1.9vh,18px);transition:.12s
+}
+.opt:hover{border-color:var(--blue)}
+.opt.right{background:#EAF7DB;border-color:var(--green-d);color:var(--green-d)}
+.opt.wrong{background:#FDECEC;border-color:#E88;color:#C33}
+.opt:disabled{cursor:default}
+.fb{font-size:clamp(12px,1.85vh,18px);margin-top:8px;font-weight:700;color:var(--green-d)}
+.fb.ng{color:#C33}
+
+.stage-hint{
+  position:absolute;left:50%;transform:translateX(-50%);bottom:8px;
+  font-size:clamp(12px,1.85vh,17px);font-weight:800;color:var(--sub);
+  background:rgba(255,255,255,.9);padding:4px 14px;border-radius:999px;border:1.5px solid var(--line);
+  pointer-events:none
+}
+
+/* 予想 */
+.yosou{background:#EEF6FC;border-color:#B9DCF2;display:flex;align-items:center;
+  gap:clamp(5px,.7vw,9px);flex-wrap:wrap;flex:none}
+.ylabel{font-size:clamp(12px,1.95vh,19px);font-weight:800}
+.yb{font:inherit;font-weight:800;cursor:pointer;border:2px solid #B9DCF2;background:#fff;color:var(--ink);
+  border-radius:999px;padding:4px 15px;font-size:clamp(12px,1.9vh,18px);transition:.12s}
+.yb:hover{border-color:var(--blue);color:var(--blue)}
+.yb.chosen{background:var(--blue);color:#fff;border-color:var(--blue)}
+.yb:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.ymsg{font-size:clamp(12px,1.9vh,18px);font-weight:800;color:var(--blue);width:100%}
+.ymsg.hit{color:var(--green-d)}
+.ymsg.miss{color:var(--orange-d)}
+
+/* 記録表 */
+.reclab{font-size:clamp(11px,1.75vh,16px);font-weight:700;color:var(--sub);margin-top:10px}
+.rectbl{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.recrow{display:flex;align-items:center;gap:8px;font-size:clamp(11px,1.7vh,16px);font-weight:800;color:var(--sub)}
+.recrow .rn{flex:none;width:5.4em}
+.recbar{flex:1;height:clamp(10px,1.6vh,16px);background:#F0EADF;border:1px solid var(--line);
+  border-radius:999px;overflow:hidden}
+.recbar i{display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,#FFD08A,var(--orange));transition:width .35s}
+.recrow .rv{flex:none;width:3.8em;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.recrow.best .rv{color:var(--orange-d)}
+
+@media (max-width:820px){
+  .panel{grid-template-columns:1fr;grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}
+  .panel.wide-side{grid-template-columns:1fr}
+  .side{overflow:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="num">6</div><h1>とじこめた空気や水</h1></div>
+    <nav id="nav">
+      <button class="tab on">空気でっぽう</button>
+      <button class="tab">とじこめた空気</button>
+      <button class="tab">とじこめた水</button>
+      <button class="tab">空気と水</button>
+      <button class="tab">水でっぽう</button>
+      <button class="tab">まとめ・たしかめ</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ 1 空気でっぽう ============ -->
+    <section class="panel on">
+      <div class="stage">
+        <svg id="cannon" viewBox="-190 0 1150 560" preserveAspectRatio="xMidYMid meet">
+          <g id="c-scale"></g>
+          <!-- tube -->
+          <rect x="70" y="120" width="490" height="110" rx="18" fill="#F4F9FC" stroke="#9FB6C4" stroke-width="4"/>
+          <g id="c-air"></g>
+          <g id="c-rod">
+            <rect x="-278" y="140" width="46" height="70" rx="13" fill="#4B9FD8" stroke="#2C7FBF" stroke-width="3"/>
+            <rect x="-244" y="160" width="374" height="30" rx="10" fill="#F5C518" stroke="#D9A400" stroke-width="3"/>
+          </g>
+          <rect id="c-back"  x="130" y="132" width="30" height="86" rx="10" fill="#F2809A" stroke="#D25873" stroke-width="3"/>
+          <rect id="c-front" x="526" y="132" width="30" height="86" rx="10" fill="#5AA9E6" stroke="#2C7FBF" stroke-width="3"/>
+          <rect x="70" y="120" width="490" height="110" rx="18" fill="none" stroke="#9FB6C4" stroke-width="4"/>
+          <text id="c-frontlbl" x="541" y="104" font-size="24" font-weight="700" fill="#2C7FBF" text-anchor="middle">前の玉</text>
+          <text id="c-backlbl" x="145" y="104" font-size="24" font-weight="700" fill="#D25873" text-anchor="middle">後ろの玉</text>
+          <g id="c-gap" opacity="0">
+            <text x="340" y="284" font-size="24" font-weight="700" fill="#6B7580" text-anchor="middle">とじこめた空気</text>
+          </g>
+          <g id="c-meas" opacity="0">
+            <line id="cm-l" x1="0" y1="312" x2="0" y2="312" stroke="#E4451F" stroke-width="4"/>
+            <line id="cm-a" x1="0" y1="292" x2="0" y2="332" stroke="#E4451F" stroke-width="4"/>
+            <line id="cm-b" x1="0" y1="292" x2="0" y2="332" stroke="#E4451F" stroke-width="4"/>
+            <text id="cm-t" x="0" y="322" font-size="25" font-weight="800" fill="#E4451F" text-anchor="end"></text>
+          </g>
+          <text id="c-dist" x="700" y="376" font-size="34" font-weight="800" fill="#EE7800" text-anchor="middle" opacity="0"></text>
+        </svg>
+        <div class="stage-hint">おしぼう（黄色）を右へドラッグ　※ゆっくり／すばやく をためしてみよう</div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h2><span class="chip">問題をつかもう</span></h2>
+          <p class="q">空気でっぽうの玉を飛ばして、気づいたことを話し合ってみよう。</p>
+          <div class="meter-wrap"><span class="meter-label">手ごたえ</span><div class="meter"><i id="c-meter"></i></div></div>
+          <div class="readout">
+            <div class="stat"><b>とじこめた空気の長さ</b><span id="c-len">100<small>%</small></span></div>
+            <div class="stat"><b>おした速さ</b><span id="c-sp">—</span></div>
+            <div class="stat"><b>飛んだきょり</b><span id="c-m">—</span></div>
+          </div>
+          <div class="btns">
+            <button class="act ghost" id="c-reset">もとにもどす</button>
+            <button class="act ghost" id="c-slow">ゆっくり見る</button>
+            <button class="act ghost" id="c-measure">玉のきょりをはかる</button>
+          </div>
+          <div class="reclab">きろく（おした速さべつ・m）</div>
+          <div class="rectbl">
+            <div class="recrow"><span class="rn">ゆっくり</span><div class="recbar"><i id="rb-slow"></i></div><span class="rv" id="rv-slow">—</span></div>
+            <div class="recrow"><span class="rn">ふつう</span><div class="recbar"><i id="rb-normal"></i></div><span class="rv" id="rv-normal">—</span></div>
+            <div class="recrow"><span class="rn">すばやく</span><div class="recbar"><i id="rb-fast"></i></div><span class="rv" id="rv-fast">—</span></div>
+          </div>
+        </div>
+        <div class="card yosou" id="c-yosou">
+          <span class="chip b">予想</span>
+          <span class="ylabel">おす速さをかえると、飛ぶきょりは</span>
+          <button class="yb">かわる</button>
+          <button class="yb">かわらない</button>
+        </div>
+        <div class="speech" id="c-say">おしぼうをおすと、後ろの玉と前の玉の間の空気はどうなるかな？</div>
+        <div class="card matome hidden" id="c-mat">
+          <h2><span class="chip g">気づいたこと</span></h2>
+          <ul>
+            <li>ゆっくりおすと、前の玉はひょこんと落ちた。</li>
+            <li>すばやくおすと、手ごたえが大きくなり、遠くまで飛んだ。</li>
+            <li>後ろの玉と前の玉は、ぶつかっていない。</li>
+            <li>間の空気が、前の玉をおし出しているようだ。</li>
+          </ul>
+        </div>
+        <button class="act ghost" id="c-mat-btn">気づいたことを見る</button>
+      </div>
+    </section>
+
+    <!-- ============ 2 空気 ============ -->
+    <section class="panel">
+      <div class="stage" id="stage-air">
+        <div class="stage-hint">ピストンを下へドラッグ</div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h2><span class="chip">問題</span></h2>
+          <p class="q">とじこめた空気をおしたとき、空気はどうなっているのだろうか。</p>
+          <div class="meter-wrap"><span class="meter-label">手ごたえ</span><div class="meter"><i id="a-meter"></i></div></div>
+          <div class="readout">
+            <div class="stat"><b>空気の体積</b><span id="a-vol">20<small>mL</small></span></div>
+            <div class="stat"><b>目もりの動き</b><span id="a-pct">100<small>%</small></span></div>
+          </div>
+          <div class="btns">
+            <button class="act" id="a-push">ゆっくりおす</button>
+            <button class="act" id="a-release">手をはなす</button>
+          </div>
+        </div>
+        <div class="card yosou" id="a-yosou">
+          <span class="chip b">予想</span>
+          <span class="ylabel">空気をおすと、体積は</span>
+          <button class="yb">小さくなる</button>
+          <button class="yb">変わらない</button>
+          <button class="yb">大きくなる</button>
+        </div>
+        <div class="speech" id="a-say">予想してから、ピストンをおしてみよう。体積はどうなるかな？</div>
+        <div class="card matome hidden" id="a-mat">
+          <h2><span class="chip">まとめ</span></h2>
+          <ul>
+            <li>とじこめた空気をおすと、体積が小さくなる。</li>
+            <li>体積が小さくなるほど、おし返される手ごたえが大きくなる。</li>
+            <li>体積が小さくなった空気は、もとの体積にもどろうとする。</li>
+          </ul>
+        </div>
+        <button class="act ghost" id="a-mat-btn">まとめを見る</button>
+      </div>
+    </section>
+
+    <!-- ============ 3 水 ============ -->
+    <section class="panel">
+      <div class="stage compare">
+        <div class="col">
+          <div class="col-title air">空気</div>
+          <div class="col-svg" id="sy-air2"></div>
+          <div class="mini"><span>手ごたえ</span><div class="meter"><i id="w2-meter"></i></div></div>
+          <div class="mini-val">体積 <b id="w2-vol">20.0 mL</b></div>
+        </div>
+        <div class="col">
+          <div class="col-title water">水</div>
+          <div class="col-svg" id="sy-water2"></div>
+          <div class="mini"><span>手ごたえ</span><div class="meter"><i id="w-meter"></i></div></div>
+          <div class="mini-val">体積 <b id="w-vol">20.0 mL</b></div>
+        </div>
+        <div class="stage-hint">それぞれのピストンを下へドラッグ</div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h2><span class="chip">問題</span></h2>
+          <p class="q">水も空気と同じように、おしちぢめることができるのだろうか。</p>
+          <div class="btns">
+            <button class="act" id="w-push">両方をおす</button>
+            <button class="act" id="w-release">手をはなす</button>
+            <button class="act ghost" id="w-dots">つぶで見る</button>
+          </div>
+        </div>
+        <div class="card yosou" id="w-yosou">
+          <span class="chip b">予想</span>
+          <span class="ylabel">水をおすと、体積は</span>
+          <button class="yb">小さくなる</button>
+          <button class="yb">変わらない</button>
+          <button class="yb">大きくなる</button>
+        </div>
+        <div class="speech" id="w-say">左の空気とくらべながら、右の水をおしてみよう。手ごたえや体積はちがうかな？</div>
+        <div class="card matome hidden" id="w-mat">
+          <h2><span class="chip">まとめ</span></h2>
+          <ul>
+            <li>とじこめた水をおしても、体積は変わらない。</li>
+            <li>おしたしゅんかんに、かたい手ごたえがある。</li>
+            <li>同じようにおしても、空気はちぢみ、水はちぢまない。</li>
+          </ul>
+        </div>
+        <button class="act ghost" id="w-mat-btn">まとめを見る</button>
+      </div>
+    </section>
+
+    <!-- ============ 4 空気と水 ============ -->
+    <section class="panel">
+      <div class="stage compare">
+        <div class="col">
+          <div class="toggle" id="b-toggle">
+            <button class="tg on" data-m="air">空気</button>
+            <button class="tg" data-m="water">水</button>
+          </div>
+          <div class="col-svg" id="b-left-air"></div>
+          <div class="col-svg hidden" id="b-left-water"></div>
+          <div class="mini"><span>手ごたえ</span><div class="meter"><i id="b2-meter"></i></div></div>
+          <div class="mini-val">体積 <b id="b2-vol">20.0 mL</b></div>
+        </div>
+        <div class="col">
+          <div class="col-title mix">空気と水</div>
+          <div class="col-svg" id="stage-both"></div>
+          <div class="mini"><span>手ごたえ</span><div class="meter"><i id="b-meter"></i></div></div>
+          <div class="mini-val">空気 <b id="b-air">10.0 mL</b>／水 <b id="b-wat">10.0 mL</b></div>
+        </div>
+        <div class="stage-hint">左は「空気」「水」を切りかえられます</div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h2><span class="chip g">理科の広場</span></h2>
+          <p class="q">空気と水を半分ずつとじこめて、おしてみよう。</p>
+          <div class="btns">
+            <button class="act" id="b-push">両方をおす</button>
+            <button class="act" id="b-release">手をはなす</button>
+            <button class="act ghost" id="b-dots">つぶで見る</button>
+          </div>
+        </div>
+        <div class="card yosou" id="b-yosou">
+          <span class="chip b">予想</span>
+          <span class="ylabel">半分ずつおすと</span>
+          <button class="yb">両方ちぢむ</button>
+          <button class="yb">空気だけちぢむ</button>
+          <button class="yb">どちらもちぢまない</button>
+        </div>
+        <div class="speech" id="b-say">どちらがちぢむのかな？　自分の考えを発表してから実験しよう。</div>
+        <div class="card matome hidden" id="b-mat">
+          <h2><span class="chip">わかったこと</span></h2>
+          <ul>
+            <li>空気の部分だけが小さくなり、水の部分は変わらない。</li>
+            <li>空気だけのときよりも、ちぢむ量は少ない。</li>
+            <li>空気がちぢみきると、それ以上おせなくなる。</li>
+          </ul>
+        </div>
+        <button class="act ghost" id="b-mat-btn">わかったことを見る</button>
+      </div>
+    </section>
+
+    <!-- ============ 5 水でっぽう ============ -->
+    <section class="panel">
+      <div class="stage">
+        <svg id="wgun" viewBox="-140 0 1140 520" preserveAspectRatio="xMidYMid meet">
+          <g id="g-scale"></g>
+          <rect x="240" y="150" width="260" height="90" rx="14" fill="#F4F9FC" stroke="#9FB6C4" stroke-width="4"/>
+          <rect id="g-water" x="266" y="150" width="234" height="90" fill="#9BD3EF"/>
+          <path id="g-noz" d="" fill="#DDE3E7" stroke="#9FB6C4" stroke-width="3"/>
+          <g id="g-rod">
+            <rect x="-104" y="164" width="44" height="62" rx="13" fill="#4B9FD8" stroke="#2C7FBF" stroke-width="3"/>
+            <rect x="-64" y="182" width="304" height="26" rx="9" fill="#F5C518" stroke="#D9A400" stroke-width="3"/>
+          </g>
+          <rect id="g-seal" x="240" y="150" width="26" height="90" rx="6" fill="#5B4A3C"/>
+          <rect x="240" y="150" width="260" height="90" rx="14" fill="none" stroke="#9FB6C4" stroke-width="4"/>
+          <g id="g-jet"></g>
+          <text x="370" y="132" font-size="24" font-weight="700" fill="#2C7FBF" text-anchor="middle">とじこめた水</text>
+          <text id="g-nozlbl" x="596" y="140" font-size="22" font-weight="700" fill="#6B7580" text-anchor="middle">先</text>
+          <text id="g-land" x="700" y="400" font-size="32" font-weight="800" fill="#1F8FCF" text-anchor="middle" opacity="0"></text>
+        </svg>
+        <div class="stage-hint">おしぼう（黄色）を右へドラッグ　※先の太さをかえてくらべよう</div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h2><span class="chip g">やってみよう</span></h2>
+          <p class="q">水でっぽうの先の太さをかえると、水はどこまで飛ぶだろうか。</p>
+          <div class="toggle" id="g-toggle" style="display:inline-flex;margin-top:8px">
+            <button class="tg on" data-n="thin">細い</button>
+            <button class="tg" data-n="mid">ふつう</button>
+            <button class="tg" data-n="wide">太い</button>
+          </div>
+          <div class="readout">
+            <div class="stat"><b>先の太さ</b><span id="g-noz-v">細い</span></div>
+            <div class="stat"><b>飛んだきょり</b><span id="g-dist">—</span></div>
+          </div>
+          <div class="btns">
+            <button class="act" id="g-push">おす</button>
+            <button class="act ghost" id="g-fill">水を入れる</button>
+          </div>
+          <div class="reclab">きろく（先の太さべつ・m）</div>
+          <div class="rectbl">
+            <div class="recrow"><span class="rn">細い</span><div class="recbar"><i id="gb-thin"></i></div><span class="rv" id="gv-thin">—</span></div>
+            <div class="recrow"><span class="rn">ふつう</span><div class="recbar"><i id="gb-mid"></i></div><span class="rv" id="gv-mid">—</span></div>
+            <div class="recrow"><span class="rn">太い</span><div class="recbar"><i id="gb-wide"></i></div><span class="rv" id="gv-wide">—</span></div>
+          </div>
+        </div>
+        <div class="speech" id="g-say">水はおしてもちぢまないのに、どうして遠くまで飛ぶのかな？</div>
+        <div class="card matome hidden" id="g-mat">
+          <h2><span class="chip">わかったこと</span></h2>
+          <ul>
+            <li>とじこめた水はちぢまないので、おした分だけそのまま外へおし出される。</li>
+            <li>先が細いほど、出ていく水の速さが速くなり、遠くまで飛ぶ。</li>
+            <li>すばやくおすほど、いきおいよく飛ぶ。</li>
+          </ul>
+        </div>
+        <button class="act ghost" id="g-mat-btn">わかったことを見る</button>
+      </div>
+    </section>
+
+    <!-- ============ 6 まとめ ============ -->
+    <section class="panel wide-side">
+      <div class="stage" style="justify-content:flex-start;padding:clamp(10px,2vh,20px)">
+        <svg viewBox="0 0 620 400" preserveAspectRatio="xMidYMid meet" style="cursor:default">
+          <text x="310" y="34" text-anchor="middle" font-size="26" font-weight="800" fill="#2E3338">とじこめた空気や水</text>
+          <line x1="150" y1="46" x2="470" y2="46" stroke="#1F8FCF" stroke-width="3"/>
+
+          <text x="30" y="90" font-size="19" font-weight="800" fill="#2E3338">＜空気＞</text>
+          <g transform="translate(60,105)">
+            <rect x="0" y="0" width="46" height="120" rx="4" fill="#fff" stroke="#7E8B94" stroke-width="2.5"/>
+            <rect x="4" y="30" width="38" height="86" fill="#EAF4FA"/>
+            <rect x="4" y="24" width="38" height="9" fill="#6B5B4B"/>
+            <rect x="17" y="-26" width="12" height="52" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+            <rect x="-6" y="-34" width="58" height="10" rx="3" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+          </g>
+          <text x="130" y="160" font-size="15" font-weight="700" fill="#6B7580">ピストン</text>
+          <text x="130" y="180" font-size="15" font-weight="700" fill="#6B7580">をおす。</text>
+          <path d="M126 190 h58 l0 -8 l20 14 l-20 14 l0 -8 h-58 z" fill="#1F8FCF"/>
+          <g transform="translate(225,105)">
+            <rect x="0" y="0" width="46" height="120" rx="4" fill="#fff" stroke="#7E8B94" stroke-width="2.5"/>
+            <rect x="4" y="76" width="38" height="40" fill="#CFE6F4"/>
+            <rect x="4" y="70" width="38" height="9" fill="#6B5B4B"/>
+            <rect x="17" y="20" width="12" height="52" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+            <rect x="-6" y="12" width="58" height="10" rx="3" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+          </g>
+          <text x="300" y="118" font-size="16" font-weight="700" fill="#2E3338">● とじこめた空気をおすと、</text>
+          <text x="316" y="140" font-size="16" font-weight="700" fill="#2E3338">体積が小さくなる。</text>
+          <text x="300" y="168" font-size="16" font-weight="700" fill="#2E3338">● 体積が小さくなるほど、</text>
+          <text x="316" y="190" font-size="16" font-weight="700" fill="#2E3338">手ごたえが大きくなる。</text>
+          <text x="300" y="218" font-size="16" font-weight="700" fill="#2E3338">● もとの体積にもどろうとする。</text>
+
+          <text x="30" y="278" font-size="19" font-weight="800" fill="#2E3338">＜水＞</text>
+          <g transform="translate(60,290)">
+            <rect x="0" y="0" width="46" height="90" rx="4" fill="#fff" stroke="#7E8B94" stroke-width="2.5"/>
+            <rect x="4" y="24" width="38" height="62" fill="#9BD3EF"/>
+            <rect x="4" y="18" width="38" height="9" fill="#6B5B4B"/>
+            <rect x="17" y="-24" width="12" height="44" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+            <rect x="-6" y="-32" width="58" height="10" rx="3" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+          </g>
+          <text x="130" y="325" font-size="15" font-weight="700" fill="#6B7580">ピストン</text>
+          <text x="130" y="345" font-size="15" font-weight="700" fill="#6B7580">をおす。</text>
+          <path d="M126 355 h58 l0 -8 l20 14 l-20 14 l0 -8 h-58 z" fill="#1F8FCF"/>
+          <g transform="translate(225,290)">
+            <rect x="0" y="0" width="46" height="90" rx="4" fill="#fff" stroke="#7E8B94" stroke-width="2.5"/>
+            <rect x="4" y="24" width="38" height="62" fill="#9BD3EF"/>
+            <rect x="4" y="18" width="38" height="9" fill="#6B5B4B"/>
+            <rect x="17" y="-24" width="12" height="44" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+            <rect x="-6" y="-32" width="58" height="10" rx="3" fill="#D9DEE2" stroke="#7E8B94" stroke-width="2"/>
+          </g>
+          <text x="300" y="322" font-size="16" font-weight="700" fill="#2E3338">● とじこめた水をおしても、</text>
+          <text x="316" y="344" font-size="16" font-weight="700" fill="#2E3338">体積は変わらない。</text>
+        </svg>
+        <div class="hintview" id="hintview">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="chip">ヒント</span>
+            <span class="hq" id="hint-q"></span>
+          </div>
+          <div class="hb" id="hint-b"></div>
+          <button class="act ghost" id="hint-close" style="align-self:flex-start;margin-top:auto">とじる</button>
+        </div>
+      </div>
+      <div class="side">
+        <div class="card" style="flex:none;display:flex;align-items:center;gap:10px">
+          <span class="chip b">たしかめよう</span>
+          <p class="note" style="margin:0">問題をえらぶと、答えとわけが出ます。</p>
+        </div>
+        <div class="quiz" id="quiz"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+
+/* ---------------- tabs ---------------- */
+const tabs = [...document.querySelectorAll('.tab')];
+const panels = [...document.querySelectorAll('.panel')];
+tabs.forEach((t,i)=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('on'));
+  panels.forEach(x=>x.classList.remove('on'));
+  t.classList.add('on'); panels[i].classList.add('on');
+}));
+
+/* toggle helper */
+function toggler(btnId, boxId, labelShow, labelHide){
+  const b=$(btnId), m=$(boxId);
+  b.addEventListener('click',()=>{
+    const hid=m.classList.toggle('hidden');
+    b.textContent = hid ? labelShow : labelHide;
+  });
+}
+
+/* ---------------- 予想（実験前に選ぶ→実験後に自動でふり返る） ---------------- */
+function yosou(sel, correct, fact){
+  const box=$(sel); if(!box) return {check(){}};
+  const btns=[...box.querySelectorAll('.yb')];
+  const msg=document.createElement('span'); msg.className='ymsg'; box.appendChild(msg);
+  let picked=null, done=false;
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{
+    picked=i; done=false;
+    btns.forEach(x=>x.classList.toggle('chosen',x===b));
+    msg.className='ymsg';
+    msg.textContent='予想を記ろくしたよ。実験でたしかめよう。';
+  }));
+  return {
+    check(){
+      if(picked===null||done) return;
+      done=true;
+      const hit = picked===correct;
+      msg.className='ymsg '+(hit?'hit':'miss');
+      msg.textContent=(hit?'◯ 予想どおり！　':'△ 予想とちがったね。　')+fact;
+    }
+  };
+}
+
+/* ================================================================
+   1. AIR CANNON
+   ================================================================ */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const svg=$('#cannon'), airG=$('#c-air'), scaleG=$('#c-scale'), back=$('#c-back'),
+        front=$('#c-front'), rod=$('#c-rod'), gap=$('#c-gap'), gapT=gap.querySelector('text'),
+        distT=$('#c-dist'), backLbl=$('#c-backlbl'), frontLbl=$('#c-frontlbl'), meter=$('#c-meter'),
+        lenT=$('#c-len'), spT=$('#c-sp'), mT=$('#c-m'), say=$('#c-say'),
+        measG=$('#c-meas'), mL=$('#cm-l'), mA=$('#cm-a'), mB=$('#cm-b'), mT2=$('#cm-t');
+
+  const BX0=130, BW=30, FX=526;                 // 後ろの玉の初期位置／前の玉の位置
+  const COL0=FX-(BX0+BW), COLMIN=130;           // とじこめた空気の長さ
+  const BXMAX=FX-BW-COLMIN, FIRE_COL=200;       // 発射しきい値
+  const RMAX=COL0/COLMIN-1;
+  const ORIGIN=541, PXM=38, FLOOR=480;          // 0m の位置・1mあたりのpx
+  const G=1450, DROP=262, TFALL=Math.sqrt(2*DROP/G); // 落下の物理
+  const PXCM=490/30;                            // つつの内側490px＝30cm
+  const REC={slow:0,normal:0,fast:0};           // おした速さべつの記録
+  const yos=yosou('#c-yosou',0,'おす速さによって、飛ぶきょりは大きくかわったね。');
+  let bx=BX0, fired=false, drag=null, raf=null, samples=[], lastV=0, measOn=false;
+
+  /* --- ゆか と きょりの目もり --- */
+  scaleG.appendChild(mk('rect',{x:-190,y:FLOOR,width:1150,height:80,fill:'#F5EFE2'}));
+  scaleG.appendChild(mk('line',{x1:-190,y1:FLOOR,x2:960,y2:FLOOR,stroke:'#C9BCA3','stroke-width':4}));
+  for(let k=0;k<=10;k++){
+    const x=ORIGIN+k*PXM;
+    scaleG.appendChild(mk('line',{x1:x,y1:FLOOR,x2:x,y2:FLOOR+(k%2?9:16),stroke:'#B7A98E','stroke-width':3}));
+    if(k%2===0){
+      const t=mk('text',{x:x,y:FLOOR+44,'font-size':22,'font-weight':700,fill:'#9C8E74','text-anchor':'middle'});
+      t.textContent=k+'m'; scaleG.appendChild(t);
+    }
+  }
+
+  /* --- とじこめた空気 --- */
+  const bg=mk('rect',{y:132,height:86,fill:'#E8F4FB'});
+  airG.appendChild(bg);
+  const dots=[];
+  for(let i=0;i<64;i++){
+    const c=mk('circle',{r:4.2,fill:'#8FBFD9'});
+    airG.appendChild(c); dots.push({el:c,fx:Math.random(),fy:Math.random()});
+  }
+
+  function ratio(){ const col=FX-(bx+BW); return Math.min(1,Math.max(0,(COL0/col-1)/RMAX)); }
+
+  function draw(){
+    const col=Math.max(0,FX-(bx+BW));
+    back.setAttribute('x',bx);
+    backLbl.setAttribute('x',bx+15);
+    rod.setAttribute('transform','translate('+(bx-BX0)+',0)');
+    bg.setAttribute('x',bx+BW); bg.setAttribute('width',col);
+    dots.forEach(d=>{
+      d.el.setAttribute('cx', bx+BW+7+d.fx*Math.max(1,col-14));
+      d.el.setAttribute('cy', 138+d.fy*74);
+      d.el.setAttribute('opacity', col>18?1:0);
+    });
+    gapT.setAttribute('x', bx+BW+col/2);
+    if(!fired){
+      const r=ratio();
+      meter.style.width=(r*100)+'%';
+      lenT.innerHTML=Math.round(col/COL0*100)+'<small>%</small>';
+      gap.setAttribute('opacity', r>0.05?1:0);
+      if(measOn) showMeas(bx+BW,FX,false);
+    }else{
+      gap.setAttribute('opacity',0);
+    }
+  }
+
+  /* --- 玉と玉のきょり（寸法線） --- */
+  function showMeas(x1,x2,after){
+    const cm=(x2-x1)/PXCM;
+    mL.setAttribute('x1',x1); mL.setAttribute('x2',x2);
+    mA.setAttribute('x1',x1); mA.setAttribute('x2',x1);
+    mB.setAttribute('x1',x2); mB.setAttribute('x2',x2);
+    mT2.setAttribute('x',x1-14);
+    mT2.textContent = cm.toFixed(1)+'cm '+(after?'はなれたまま飛び出した':'はなれている');
+    measG.setAttribute('opacity',1);
+  }
+
+  /* --- おした速さべつの記録 --- */
+  function rec(cat,d){
+    if(d<=REC[cat]) return;
+    REC[cat]=d;
+    $('#rb-'+cat).style.width=Math.min(100,d/10*100)+'%';
+    $('#rv-'+cat).textContent=d.toFixed(1);
+    if(['slow','normal','fast'].filter(k=>REC[k]>0).length>=2) yos.check();
+  }
+
+  /* --- おした速さ（ビューボックス座標 px/秒） --- */
+  function speedNow(){
+    const now=performance.now();
+    if(!samples.length) return 0;
+    let old=samples[samples.length-1];
+    for(let i=samples.length-1;i>=0;i--){
+      if(now-samples[i].t<=130){ old=samples[i]; break; }
+    }
+    let dt=(now-old.t)/1000;
+    if(dt<0.006){ old=samples[samples.length-1]; dt=(now-old.t)/1000; }
+    return dt>0 ? Math.max(0,(bx-old.x)/dt) : 0;
+  }
+
+  function fire(v,slow){
+    fired=true; drag=null; lastV=v; svg.classList.remove('grabbing');
+    frontLbl.setAttribute('opacity',0);
+    const TS = slow?5:1;                              // スロー再生は1/5の速さ
+    const gapCm=(FX-(bx+BW))/PXCM;                    // 飛び出すときの玉と玉のきょり
+    if(measOn) showMeas(bx+BW,FX,true);
+    const vx=Math.max(38,Math.min(632, 38+v*0.28));   // 玉の初速
+    const dist=vx*TFALL/PXM;                          // 飛ぶきょり(m)
+    const cat = v<180?'slow' : (v<800?'normal':'fast');
+    spT.textContent = v<180?'ゆっくり' : (v<800?'ふつう':'すばやく');
+    mT.innerHTML=dist.toFixed(1)+'<small>m</small>';
+    rec(cat,dist);
+    say.className='speech ok';
+    say.textContent = measOn
+      ? '玉が動き出したとき、2つの玉は '+gapCm.toFixed(1)+'cm はなれていたよ。玉どうしはぶつかっていないね。'
+      : slow
+        ? 'スローで見ると、後ろの玉がとどく前に前の玉が動き出しているのがわかるね。'
+        : v<180
+          ? 'ゆっくりおしたので、空気があまりちぢまないうちに玉が動き出し、ひょこんと落ちたね。'
+          : v<800
+            ? 'そこそこ飛んだね。もっとすばやくおすと、どうなるかな？'
+            : 'すばやくおすと、空気が一気におしちぢめられて手ごたえが大きくなり、玉は遠くまで飛んだ！';
+    const bxs=bx, t0=performance.now();
+    (function step(t){
+      const s=(t-t0)/1000/TS, tt=Math.min(s,TFALL);
+      front.setAttribute('transform','translate('+(vx*tt)+','+(0.5*G*tt*tt)+')');
+      // 後ろの玉は前の玉に追いつけない（つねに手前で止まる）
+      const want=bxs+(FX-bxs)*Math.min(1,s/0.28);
+      const limit=(FX+vx*tt)-BW-26;
+      bx=Math.min(want, Math.max(bxs, limit));
+      draw();
+      if(s<TFALL){ raf=requestAnimationFrame(step); }
+      else{
+        distT.setAttribute('x', Math.min(935,ORIGIN+vx*TFALL));
+        distT.textContent=dist.toFixed(1)+' m';
+        distT.setAttribute('opacity',1);
+      }
+    })(t0);
+  }
+
+  function onStop(){
+    // 前の玉は固定されていないので、手を止めてもおしぼうはおし返されない。
+    if(bx-BX0<4) return;
+    say.className='speech';
+    say.textContent='手を止めても、おしぼうはそこで止まったまま。もう少しおすと玉が飛び出すよ。';
+  }
+
+  function reset(){
+    cancelAnimationFrame(raf); fired=false; bx=BX0; samples=[];
+    front.removeAttribute('transform');
+    frontLbl.setAttribute('opacity',1);
+    distT.setAttribute('opacity',0);
+    measG.setAttribute('opacity',0);
+    mT.textContent='—'; spT.textContent='—';
+    say.className='speech';
+    say.textContent='おしぼうをおすと、後ろの玉と前の玉の間の空気はどうなるかな？';
+    draw();
+  }
+
+  /* --- ドラッグ操作 --- */
+  svg.addEventListener('pointerdown',e=>{
+    if(fired) reset();
+    cancelAnimationFrame(raf);
+    const rect=svg.getBoundingClientRect();
+    drag={x:e.clientX, bx:bx, k:1150/rect.width};
+    samples=[{t:performance.now(),x:bx}];
+    svg.setPointerCapture(e.pointerId); svg.classList.add('grabbing');
+  });
+  svg.addEventListener('pointermove',e=>{
+    if(!drag||fired) return;
+    bx=Math.min(BXMAX,Math.max(BX0, drag.bx+(e.clientX-drag.x)*drag.k));
+    samples.unshift({t:performance.now(),x:bx});
+    if(samples.length>8) samples.pop();
+    draw();
+    if(FX-(bx+BW)<=FIRE_COL) fire(speedNow());
+  });
+  const up=()=>{ if(drag){ drag=null; svg.classList.remove('grabbing'); onStop(); } };
+  svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+
+  $('#c-reset').addEventListener('click',reset);
+  $('#c-slow').addEventListener('click',()=>{
+    if(!lastV){ say.className='speech'; say.textContent='まず一度、おしぼうをおして玉を飛ばしてみよう。そのあと「ゆっくり見る」でふり返れるよ。'; return; }
+    reset(); bx=FX-BW-FIRE_COL; draw(); fire(lastV,true);
+  });
+  $('#c-measure').addEventListener('click',e=>{
+    measOn=!measOn;
+    e.currentTarget.textContent = measOn?'きょりをかくす':'玉のきょりをはかる';
+    if(measOn){ if(!fired) draw(); }
+    else measG.setAttribute('opacity',0);
+  });
+  toggler('#c-mat-btn','#c-mat','気づいたことを見る','とじる');
+  draw();
+})();
+
+/* ================================================================
+   SYRINGE  (2,3,4 共通)
+   ================================================================ */
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
+
+function syringe(hostSel, mode, ui){
+  const host=$(hostSel);
+  const TOP=100, BOTTOM=330, SH=13, IX=127, IW=86, SY0=130, RODLEN=160;
+  const CONF={
+    air  :{max:242, waterFixed:0},
+    water:{max:SY0, waterFixed:0},
+    both :{max:185, waterFixed:95}
+  }[mode];
+  const COL0 = mode==='both' ? (BOTTOM-CONF.waterFixed)-(SY0+SH) : BOTTOM-(SY0+SH);
+  const COLMIN = mode==='both' ? (BOTTOM-CONF.waterFixed)-(CONF.max+SH) : BOTTOM-(CONF.max+SH);
+  const RMAX = COL0/COLMIN-1;
+
+  const svg=el('svg',{viewBox:'-20 -50 380 470',preserveAspectRatio:'xMidYMid meet'});
+  // tray for water
+  if(mode==='water'||mode==='both')
+    svg.appendChild(el('rect',{x:70,y:348,width:200,height:34,rx:8,fill:'#E9EEF1',stroke:'#B9C6CE','stroke-width':2}));
+  // rubber board + nozzle
+  svg.appendChild(el('rect',{x:165,y:BOTTOM,width:12,height:20,fill:'#E4EAEE',stroke:'#9FB0BB','stroke-width':2}));
+  svg.appendChild(el('rect',{x:105,y:350,width:130,height:20,rx:4,fill:'#3A3F45'}));
+  // barrel back
+  svg.appendChild(el('rect',{x:120,y:TOP,width:100,height:BOTTOM-TOP,rx:6,fill:'#FFFFFF'}));
+  // fluid regions
+  const waterR=el('rect',{x:IX,width:IW,fill:'#9BD3EF'});
+  const airR=el('rect',{x:IX,width:IW,fill:'#EAF4FA'});
+  svg.appendChild(airR); svg.appendChild(waterR);
+  const dotG=el('g',{}); svg.appendChild(dotG);
+  const dots=[];
+  if(mode!=='water'){
+    const N = mode==='both' ? 26 : 46;
+    for(let i=0;i<N;i++){
+      const c=el('circle',{r:3.4,fill:'#8FBFD9'});
+      dotG.appendChild(c); dots.push({el:c,fx:Math.random(),fy:Math.random()});
+    }
+  }
+  /* 水のつぶ（すきまなくならぶ・動かない） */
+  const wdotG=el('g',{opacity:0}); svg.appendChild(wdotG);
+  if(mode==='water'||mode==='both'){
+    const yTop = (mode==='both' ? BOTTOM-CONF.waterFixed : SY0+SH)+6;
+    for(let y=yTop;y<BOTTOM-3;y+=12)
+      for(let x=IX+7;x<IX+IW-4;x+=12)
+        wdotG.appendChild(el('circle',{cx:x,cy:y,r:4.2,fill:'#2C7FBF'}));
+  }
+  function setDots(on){
+    wdotG.setAttribute('opacity', on?1:0);
+    waterR.setAttribute('opacity', on?.35:1);
+    dots.forEach(d=>d.el.setAttribute('r', on?4.0:3.4));
+  }
+  // ticks
+  const tg=el('g',{});
+  for(let y=160;y<=318;y+=18){
+    tg.appendChild(el('line',{x1:196,y1:y,x2:213,y2:y,stroke:'#9FB0BB','stroke-width':1.4}));
+  }
+  svg.appendChild(tg);
+  // line marker (original level)
+  const mark=el('line',{x1:112,y1:SY0,x2:228,y2:SY0,stroke:'#EE7800','stroke-width':2,'stroke-dasharray':'6 4'});
+  svg.appendChild(mark);
+  // seal + rod
+  const seal=el('rect',{x:IX,width:IW,height:SH,fill:'#5B4A3C',rx:2});
+  const rod=el('rect',{x:158,width:24,fill:'#DDE3E7',stroke:'#9FB0BB','stroke-width':2});
+  const handle=el('rect',{x:112,width:116,height:12,rx:4,fill:'#DDE3E7',stroke:'#9FB0BB','stroke-width':2});
+  svg.appendChild(rod); svg.appendChild(seal); svg.appendChild(handle);
+  // glass sheen + outline
+  svg.appendChild(el('rect',{x:126,y:TOP+4,width:14,height:BOTTOM-TOP-8,rx:6,fill:'#FFFFFF',opacity:.55}));
+  svg.appendChild(el('rect',{x:120,y:TOP,width:100,height:BOTTOM-TOP,rx:6,fill:'none',stroke:'#8FA3AE','stroke-width':2.5}));
+  svg.appendChild(el('rect',{x:106,y:TOP-9,width:128,height:9,rx:3,fill:'#DDE3E7',stroke:'#9FB0BB','stroke-width':2}));
+  // labels
+  const lab=(x,y,t,c,anchor)=>{
+    const e=el('text',{x:x,y:y,'font-size':19,'font-weight':700,fill:c||'#6B7580'});
+    if(anchor) e.setAttribute('text-anchor',anchor);
+    e.textContent=t; svg.appendChild(e);
+  };
+  lab(240,SY0+6,'はじめの位置','#EE7800');
+  lab(170,406,'ゴムの板','#6B7580','middle');
+  if(mode==='air') lab(240,244,'空気','#4A93BE');
+  if(mode==='water') lab(240,244,'水','#2C7FBF');
+  if(mode==='both'){ lab(240,196,'空気','#4A93BE'); lab(240,290,'水','#2C7FBF'); }
+  // push arrow
+  const arrow=el('path',{d:'M170 0 l0 -26 l-11 0 l17 -22 l17 22 l-11 0 l0 26 z',fill:'#8CC63F',opacity:0});
+  svg.appendChild(arrow);
+
+  host.insertBefore(svg, host.firstChild);
+
+  let sealY=SY0, pull=0, drag=null, raf=null;
+
+  function ratio(){
+    if(mode==='water') return Math.min(1,pull/32);
+    const bot = mode==='both' ? BOTTOM-CONF.waterFixed : BOTTOM;
+    const col = bot-(sealY+SH);
+    return Math.min(1,Math.max(0,(COL0/col-1)/RMAX));
+  }
+  function draw(){
+    seal.setAttribute('y',sealY);
+    rod.setAttribute('y',sealY-RODLEN); rod.setAttribute('height',RODLEN);
+    handle.setAttribute('y',sealY-RODLEN-12);
+    arrow.setAttribute('transform','translate(0,'+(sealY-RODLEN-16)+')');
+    const bot = mode==='both' ? BOTTOM-CONF.waterFixed : BOTTOM;
+    const aTop=sealY+SH, aH=Math.max(0,bot-aTop);
+    if(mode==='water'){
+      airR.setAttribute('height',0);
+      waterR.setAttribute('y',aTop); waterR.setAttribute('height',BOTTOM-aTop);
+    }else{
+      airR.setAttribute('y',aTop); airR.setAttribute('height',aH);
+      if(mode==='both'){ waterR.setAttribute('y',bot); waterR.setAttribute('height',BOTTOM-bot); }
+      else waterR.setAttribute('height',0);
+      dots.forEach(d=>{
+        d.el.setAttribute('cx', IX+6+d.fx*(IW-12));
+        d.el.setAttribute('cy', aTop+5+d.fy*Math.max(1,aH-10));
+      });
+    }
+    const r=ratio();
+    ui.meter.style.width=(r*100)+'%';
+    arrow.setAttribute('opacity', drag?0.9:0);
+    ui.update(r, aH, sealY);
+  }
+  function springBack(){
+    cancelAnimationFrame(raf);
+    const from=sealY, t0=performance.now();
+    (function s(t){
+      const p=Math.min(1,(t-t0)/520);
+      const e=1-Math.pow(1-p,3);
+      sealY=from+(SY0-from)*e; pull=pull*(1-e); draw();
+      if(p<1) raf=requestAnimationFrame(s); else { sealY=SY0; pull=0; draw(); ui.onRelease(); }
+    })(t0);
+  }
+  function pushTo(target,ms){
+    cancelAnimationFrame(raf);
+    const from=sealY, fp=pull, t0=performance.now();
+    (function s(t){
+      const p=Math.min(1,(t-t0)/ms);
+      sealY=from+(target-from)*p; pull=fp+(40-fp)*p; draw();
+      if(p<1) raf=requestAnimationFrame(s);
+    })(t0);
+  }
+
+  svg.addEventListener('pointerdown',e=>{
+    cancelAnimationFrame(raf);
+    const rect=svg.getBoundingClientRect();
+    drag={y:e.clientY, s:sealY, p:pull, k:470/rect.height};
+    svg.setPointerCapture(e.pointerId); svg.classList.add('grabbing');
+  });
+  svg.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const dy=(e.clientY-drag.y)*drag.k;
+    sealY=Math.min(CONF.max,Math.max(SY0, drag.s+dy));
+    pull=Math.max(0,Math.min(60,dy));
+    draw();
+  });
+  const up=()=>{ if(drag){ drag=null; svg.classList.remove('grabbing'); springBack(); } };
+  svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+
+  draw();
+
+  return {
+    push:()=>pushTo(CONF.max,900),
+    release:springBack,
+    refresh:draw,
+    dots:setDots,
+    MAX:CONF.max
+  };
+}
+
+/* ---- 2. 空気 ---- */
+(function(){
+  const say=$('#a-say'), vol=$('#a-vol'), pct=$('#a-pct');
+  const yos=yosou('#a-yosou',0,'とじこめた空気をおすと、体積は小さくなったね。');
+  let touched=false;
+  const s=syringe('#stage-air','air',{
+    meter:$('#a-meter'),
+    update(r,aH){
+      const mL=(aH/187*20);
+      vol.innerHTML=mL.toFixed(1)+'<small>mL</small>';
+      pct.innerHTML=Math.round(aH/187*100)+'<small>%</small>';
+      if(r>0.3) yos.check();
+      if(r>0.05){
+        touched=true;
+        say.className='speech ok';
+        say.textContent = r>0.7 ? '空気がぎゅっとおしちぢめられて、おし返す手ごたえがとても大きいね。'
+                        : r>0.3 ? '体積が小さくなるほど、手ごたえが大きくなっているよ。'
+                        : '空気の体積が少し小さくなったね。';
+      }
+    },
+    onRelease(){
+      if(!touched) return;
+      say.className='speech ok';
+      say.textContent='手をはなすと、ピストンはもとの位置にもどった。空気はもとの体積にもどろうとするんだね。';
+    }
+  });
+  $('#a-push').addEventListener('click',s.push);
+  $('#a-release').addEventListener('click',s.release);
+  toggler('#a-mat-btn','#a-mat','まとめを見る','とじる');
+})();
+
+/* ---- 3. 水（空気とならべてくらべる） ---- */
+(function(){
+  const say=$('#w-say');
+  const yos=yosou('#w-yosou',1,'とじこめた水は、強くおしても体積が変わらなかったね。');
+  let ar=0, wr=0, touched=false;
+  function msg(){
+    if(!touched) return;
+    say.className='speech ok';
+    say.textContent = (ar>0.3 && wr>0.3)
+      ? '同じようにおしても、空気はちぢむのに、水はまったくちぢまないね。'
+      : (wr>0.3 ? 'おしたしゅんかんに、かたい手ごたえ。水の目もりは動かないよ。'
+                : '空気のほうは、体積がどんどん小さくなっていくね。');
+  }
+  const air=syringe('#sy-air2','air',{
+    meter:$('#w2-meter'),
+    update(r,aH){
+      ar=r; $('#w2-vol').textContent=(aH/187*20).toFixed(1)+' mL';
+      if(r>0.05){ touched=true; msg(); }
+    },
+    onRelease(){}
+  });
+  const wat=syringe('#sy-water2','water',{
+    meter:$('#w-meter'),
+    update(r){
+      wr=r; $('#w-vol').textContent='20.0 mL';
+      if(r>0.3) yos.check();
+      if(r>0.1){ touched=true; msg(); }
+    },
+    onRelease(){
+      if(!touched) return;
+      say.className='speech ok';
+      say.textContent='水の体積は変わらなかった。空気とはせいしつがちがうね。';
+    }
+  });
+  $('#w-push').addEventListener('click',()=>{ air.push(); wat.push(); });
+  $('#w-release').addEventListener('click',()=>{ air.release(); wat.release(); });
+  let dotsOn=false;
+  $('#w-dots').addEventListener('click',e=>{
+    dotsOn=!dotsOn; air.dots(dotsOn); wat.dots(dotsOn);
+    e.currentTarget.textContent = dotsOn?'つぶをかくす':'つぶで見る';
+    if(dotsOn){
+      say.className='speech';
+      say.textContent='つぶで見ると、空気はつぶとつぶの間にすきまがあり、水はすきまなくつまっているよ。（発てん）';
+    }
+  });
+  toggler('#w-mat-btn','#w-mat','まとめを見る','とじる');
+})();
+
+/* ---- 4. 空気と水（左は空気／水を切りかえ） ---- */
+(function(){
+  const say=$('#b-say'), vol=$('#b2-vol');
+  const yos=yosou('#b-yosou',1,'ちぢんだのは空気の部分だけ。水の部分は変わらなかったね。');
+  let leftMode='air', lr=0, br=0, touched=false;
+  function msg(){
+    if(!touched) return;
+    say.className='speech ok';
+    if(br>0.85){
+      say.textContent='空気がちぢみきると、それ以上おせなくなったよ。';
+    }else if(lr>0.15 && br>0.05){
+      say.textContent = leftMode==='air'
+        ? '空気だけのときよりも、ちぢむ量が少ないね。ちぢんでいるのは空気の部分だけだよ。'
+        : '水だけのときは動かないのに、空気と水では空気の分だけ動くね。';
+    }else if(br>0.05){
+      say.textContent='空気の部分だけが小さくなって、水の部分は変わらないね。';
+    }else{
+      say.textContent='左の注射器とくらべながら、右もおしてみよう。';
+    }
+  }
+  const lAir=syringe('#b-left-air','air',{
+    meter:$('#b2-meter'),
+    update(r,aH){
+      if(leftMode!=='air') return;
+      lr=r; vol.textContent=(aH/187*20).toFixed(1)+' mL';
+      if(r>0.05){ touched=true; msg(); }
+    },
+    onRelease(){}
+  });
+  const lWat=syringe('#b-left-water','water',{
+    meter:$('#b2-meter'),
+    update(r){
+      if(leftMode!=='water') return;
+      lr=r; vol.textContent='20.0 mL';
+      if(r>0.1){ touched=true; msg(); }
+    },
+    onRelease(){}
+  });
+  const both=syringe('#stage-both','both',{
+    meter:$('#b-meter'),
+    update(r,aH){
+      br=r;
+      $('#b-air').textContent=(aH/92*10).toFixed(1)+' mL';
+      $('#b-wat').textContent='10.0 mL';
+      if(r>0.3) yos.check();
+      if(r>0.05){ touched=true; msg(); }
+    },
+    onRelease(){
+      if(!touched) return;
+      say.className='speech ok';
+      say.textContent='ちぢむのは空気だけ。水はおしても体積が変わらないから、ピストンはそこで止まるんだね。';
+    }
+  });
+  const left=()=> leftMode==='air' ? lAir : lWat;
+  document.querySelectorAll('#b-toggle .tg').forEach(b=>b.addEventListener('click',()=>{
+    leftMode=b.dataset.m;
+    document.querySelectorAll('#b-toggle .tg').forEach(x=>x.classList.toggle('on',x===b));
+    $('#b-left-air').classList.toggle('hidden', leftMode!=='air');
+    $('#b-left-water').classList.toggle('hidden', leftMode!=='water');
+    left().refresh();
+  }));
+  $('#b-push').addEventListener('click',()=>{ left().push(); both.push(); });
+  $('#b-release').addEventListener('click',()=>{ left().release(); both.release(); });
+  let dotsOn=false;
+  $('#b-dots').addEventListener('click',e=>{
+    dotsOn=!dotsOn; lAir.dots(dotsOn); lWat.dots(dotsOn); both.dots(dotsOn);
+    e.currentTarget.textContent = dotsOn?'つぶをかくす':'つぶで見る';
+  });
+  toggler('#b-mat-btn','#b-mat','わかったことを見る','とじる');
+})();
+
+/* ================================================================
+   5. WATER GUN
+   ================================================================ */
+(function(){
+  const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const svg=$('#wgun'), scaleG=$('#g-scale'), jetG=$('#g-jet'), water=$('#g-water'),
+        noz=$('#g-noz'), rod=$('#g-rod'), seal=$('#g-seal'), land=$('#g-land'),
+        say=$('#g-say'), distT=$('#g-dist'), nozT=$('#g-noz-v');
+  const PX0=240, SW=26, END=500, TIPX=580, TIPY=195, FLOOR=430,
+        ORIGIN=580, PXM=45, G=1450, PXMAX=END-SW, VBW=1140, VBL=-140;
+  const NOZ={
+    thin:{hw:6, k:9.0,  name:'細い'},
+    mid :{hw:13,k:4.2,  name:'ふつう'},
+    wide:{hw:24,k:2.0,  name:'太い'}
+  };
+  const REC={thin:0,mid:0,wide:0};
+  let cur='thin', px=PX0, drag=null, samples=[], drops=[], raf=null, last=0;
+
+  /* ゆか と 目もり（0〜8m） */
+  scaleG.appendChild(mk('rect',{x:VBL,y:FLOOR,width:VBW,height:90,fill:'#F5EFE2'}));
+  scaleG.appendChild(mk('line',{x1:VBL,y1:FLOOR,x2:VBL+VBW,y2:FLOOR,stroke:'#C9BCA3','stroke-width':4}));
+  for(let k=0;k<=8;k++){
+    const x=ORIGIN+k*PXM;
+    scaleG.appendChild(mk('line',{x1:x,y1:FLOOR,x2:x,y2:FLOOR+(k%2?9:16),stroke:'#B7A98E','stroke-width':3}));
+    if(k%2===0){
+      const t=mk('text',{x:x,y:FLOOR+46,'font-size':22,'font-weight':700,fill:'#9C8E74','text-anchor':'middle'});
+      t.textContent=k+'m'; scaleG.appendChild(t);
+    }
+  }
+
+  function drawNoz(){
+    const h=NOZ[cur].hw;
+    noz.setAttribute('d','M'+END+',152 L'+TIPX+','+(TIPY-h)+' L'+TIPX+','+(TIPY+h)+' L'+END+',238 Z');
+    nozT.textContent=NOZ[cur].name;
+  }
+  function draw(){
+    seal.setAttribute('x',px);
+    rod.setAttribute('transform','translate('+(px-PX0)+',0)');
+    const w=Math.max(0,END-(px+SW));
+    water.setAttribute('x',px+SW); water.setAttribute('width',w);
+  }
+  function spawn(v){
+    if(px>=PXMAX-0.5) return;
+    const vx=Math.max(30,Math.min(1000, v*NOZ[cur].k*0.05));
+    const h=NOZ[cur].hw;
+    const c=mk('circle',{r:5.4,fill:'#4FB3E8'});
+    jetG.appendChild(c);
+    drops.push({el:c, x:TIPX+3, y:TIPY+(Math.random()-0.5)*h*1.3,
+                vx:vx, vy:(Math.random()-0.5)*26});
+    if(drops.length>140){ const d=drops.shift(); d.el.remove(); }
+    if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); }
+  }
+  function record(d){
+    land.setAttribute('x',Math.min(975,ORIGIN+d*PXM));
+    land.textContent=d.toFixed(1)+' m';
+    land.setAttribute('opacity',1);
+    distT.innerHTML=d.toFixed(1)+'<small>m</small>';
+    if(d>REC[cur]){
+      REC[cur]=d;
+      $('#gb-'+cur).style.width=Math.min(100,d/8*100)+'%';
+      $('#gv-'+cur).textContent=d.toFixed(1);
+      const n=['thin','mid','wide'].filter(k=>REC[k]>0).length;
+      say.className='speech ok';
+      say.textContent = n>=2
+        ? '同じようにおしても、先が細いほど水は速く出て、遠くまで飛ぶね。'
+        : 'とじこめた水はちぢまないから、おした分がそのまま先から出ていくよ。';
+    }
+  }
+  function loop(t){
+    const dt=Math.min(0.05,(t-last)/1000); last=t;
+    for(let i=drops.length-1;i>=0;i--){
+      const d=drops[i];
+      d.vy+=G*dt; d.x+=d.vx*dt; d.y+=d.vy*dt;
+      if(d.y>=FLOOR){
+        record(Math.max(0,(d.x-ORIGIN)/PXM));
+        d.el.remove(); drops.splice(i,1); continue;
+      }
+      d.el.setAttribute('cx',d.x); d.el.setAttribute('cy',d.y);
+    }
+    raf = drops.length ? requestAnimationFrame(loop) : null;
+  }
+  function speedNow(){
+    const now=performance.now();
+    if(!samples.length) return 0;
+    let old=samples[samples.length-1];
+    for(let i=samples.length-1;i>=0;i--){ if(now-samples[i].t<=130){ old=samples[i]; break; } }
+    let dt=(now-old.t)/1000;
+    if(dt<0.006){ old=samples[samples.length-1]; dt=(now-old.t)/1000; }
+    return dt>0 ? Math.max(0,(px-old.x)/dt) : 0;
+  }
+
+  svg.addEventListener('pointerdown',e=>{
+    const rect=svg.getBoundingClientRect();
+    drag={x:e.clientX, px:px, k:VBW/rect.width};
+    samples=[{t:performance.now(),x:px}];
+    svg.setPointerCapture(e.pointerId); svg.classList.add('grabbing');
+  });
+  svg.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const p=Math.min(PXMAX,Math.max(PX0, drag.px+(e.clientX-drag.x)*drag.k));
+    const moved=p-px; px=p;
+    samples.unshift({t:performance.now(),x:px});
+    if(samples.length>8) samples.pop();
+    draw();
+    if(moved>0.5){ const v=speedNow(); spawn(v); if(moved>6) spawn(v); }
+  });
+  const up=()=>{ if(drag){ drag=null; svg.classList.remove('grabbing'); } };
+  svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+
+  document.querySelectorAll('#g-toggle .tg').forEach(b=>b.addEventListener('click',()=>{
+    cur=b.dataset.n;
+    document.querySelectorAll('#g-toggle .tg').forEach(x=>x.classList.toggle('on',x===b));
+    drawNoz();
+  }));
+  $('#g-push').addEventListener('click',()=>{
+    if(px>=PXMAX-1){ say.className='speech'; say.textContent='水がなくなったよ。「水を入れる」をおしてね。'; return; }
+    const from=px, t0=performance.now(), MS=520, v=(PXMAX-from)/(MS/1000);
+    (function s(t){
+      const p=Math.min(1,(t-t0)/MS);
+      px=from+(PXMAX-from)*p; draw(); spawn(v);
+      if(p<1) requestAnimationFrame(s);
+    })(t0);
+  });
+  $('#g-fill').addEventListener('click',()=>{
+    px=PX0; draw();
+    drops.forEach(d=>d.el.remove()); drops=[];
+    land.setAttribute('opacity',0); distT.textContent='—';
+  });
+  toggler('#g-mat-btn','#g-mat','わかったことを見る','とじる');
+  drawNoz(); draw();
+})();
+
+/* ================================================================
+   6. QUIZ
+   ================================================================ */
+(function(){
+  const QS=[
+    {q:'とじこめた空気をおしたとき、空気の体積はどうなる？',
+     o:['小さくなる','変わらない','大きくなる'],a:0,
+     e:'空気はおしちぢめられて、体積が小さくなります。',
+     h:'「とじこめた空気」のタブを思い出そう。ピストンをおしたとき、目もりはどちらに動いたかな。'},
+    {q:'とじこめた水をおしたとき、水の体積はどうなる？',
+     o:['小さくなる','変わらない','大きくなる'],a:1,
+     e:'水はおしても体積が変わりません。',
+     h:'「とじこめた水」のタブでは、強くおしてもピストンはほとんど動かなかったね。'},
+    {q:'空気でっぽうで前の玉が飛ぶのは、どうして？',
+     o:['後ろの玉がぶつかるから','おしちぢめられた空気が玉をおすから','つつがちぢむから'],a:1,
+     e:'ちぢめられた空気がもとにもどろうとして、前の玉をおし出します。玉どうしはぶつかっていません。',
+     h:'「空気でっぽう」のタブで、2つの玉の間をよく見てみよう。玉と玉はくっついていたかな。'},
+    {q:'ボールにたくさん空気を入れると、よくはずむのはなぜ？',
+     o:['中の空気がおしちぢめられていて、もどろうとするから','ボールが重くなるから','空気がぬけやすくなるから'],a:0,
+     e:'おしちぢめられた空気がもとの体積にもどろうとする力ではずみます。',
+     h:'ちぢめた空気は、そのあとどうしようとするんだったかな。注射器から手をはなしたときを思い出そう。'},
+    {q:'水でっぽうのつつの先が細いのは、どうして？',
+     o:['水がちぢむから','水が飛び出す速さが速くなり、遠くまで飛ぶから','水が軽くなるから'],a:1,
+     e:'水は体積が変わらないまま外へおし出されるので、先が細いほど速く、遠くまで飛びます。',
+     h:'「水でっぽう」のタブで、先の太さをかえてくらべてみよう。同じ量の水が細い出口から出ると、いきおいはどうなるかな。'}
+  ];
+  const wrap=$('#quiz'), hv=$('#hintview'), hq=$('#hint-q'), hb=$('#hint-b');
+  $('#hint-close').addEventListener('click',()=>hv.classList.remove('on'));
+  QS.forEach((item,i)=>{
+    const d=document.createElement('div'); d.className='qcard';
+    const head=document.createElement('div'); head.className='qhead';
+    const t=document.createElement('div'); t.className='qt'; t.textContent=(i+1)+'. '+item.q;
+    const hbtn=document.createElement('button'); hbtn.className='hint-btn'; hbtn.textContent='ヒント';
+    hbtn.addEventListener('click',()=>{
+      hq.textContent=(i+1)+'. '+item.q;
+      hb.textContent=item.h;
+      hv.classList.add('on');
+    });
+    head.appendChild(t); head.appendChild(hbtn); d.appendChild(head);
+    const o=document.createElement('div'); o.className='opts';
+    const fb=document.createElement('div'); fb.className='fb'; fb.style.display='none';
+    item.o.forEach((txt,j)=>{
+      const b=document.createElement('button'); b.className='opt'; b.textContent=txt;
+      b.addEventListener('click',()=>{
+        [...o.children].forEach(c=>c.disabled=true);
+        if(j===item.a){ b.classList.add('right'); fb.className='fb'; fb.textContent='◯ せいかい　'+item.e; }
+        else{
+          b.classList.add('wrong'); o.children[item.a].classList.add('right');
+          fb.className='fb ng'; fb.textContent='おしい！　'+item.e;
+        }
+        fb.style.display='block';
+      });
+      o.appendChild(b);
+    });
+    d.appendChild(o); d.appendChild(fb); wrap.appendChild(d);
+  });
+})();
+})();
+</script>
+</body>
+</html>
