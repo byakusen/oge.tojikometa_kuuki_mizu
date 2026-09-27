@@ -370,7 +370,6 @@ button.act:disabled{opacity:.32;cursor:default;box-shadow:none;transform:none;fi
       <button class="tab">ふうせん</button>
       <button class="tab">まとめ・たしかめ</button>
     </nav>
-    <button class="soundbtn" id="snd">🔊 音 オン</button>
   </header>
 
   <main>
@@ -825,6 +824,7 @@ function toggler(btnId, boxId, labelShow, labelHide){
 
 /* ---------------- たしかめのヒント（左の装置を実際に動かして見せる） ---------------- */
 const DEMO={};                                  // 各タブが自分のデモ関数を登録する
+const APP={quiz:{}, mode:{}};                   // 📝テストの練習から使う入口（クイズとたしかめモード）
 
 /* ---------------- 音と花まる ---------------- */
 const MARU_SRC='data:image/png;base64,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';
@@ -862,7 +862,7 @@ function popMaru(host){                          // 花まるをぽんと出し�
   setTimeout(()=>{ if(img.parentNode) img.remove(); },1750);
 }
 (function(){
-  const b=$('#snd');
+  const b=$('#snd'); if(!b) return;               // 音ボタンは v13 で外した（あれば うごく）
   b.addEventListener('click',()=>{
     SFX.set(!SFX.isOn());
     b.classList.toggle('off',!SFX.isOn());
@@ -1032,7 +1032,10 @@ function buildQuiz(box, items, onHint, onLeave){
   });
   allb.addEventListener('click',()=>{ Q.forEach(q=>q.reset()); go(0); });
   show(0);
-  return { show, current:()=>cur };
+  return { show, current:()=>cur,
+    leave:()=>{ if(onLeave) onLeave(); },               // ヒントの後始末だけ
+    reset:i=>{ if(Q[i]) Q[i].reset(); },                // i問めを未回答にもどす
+    card:i=>Q[i]?Q[i].card:null, count:items.length };
 }
 
 /* ---------------- 予想（実験前に選ぶ→実験後に自動でふり返る） ---------------- */
@@ -2141,7 +2144,7 @@ function syringe(hostSel, mode, ui){
   ];
   const wrap=$('#quiz'), hv=$('#hintview'), hq=$('#hint-q'), hb=$('#hint-b');
   $('#hint-close').addEventListener('click',()=>hv.classList.remove('on'));
-  buildQuiz(wrap, QS, (i,item)=>{
+  APP.quiz.q = buildQuiz(wrap, QS, (i,item)=>{
     hq.textContent=(i+1)+'. '+item.q;
     hb.textContent=item.h;
     hv.classList.add('on');
@@ -2149,7 +2152,7 @@ function syringe(hostSel, mode, ui){
 })();
 
 /* ================================================================
-   7. 各タブの「たしかめ」（ミニ問題）
+   8. 各タブの「たしかめ」（ミニ問題）
    ================================================================ */
 (function(){
   const MINI={
@@ -2242,20 +2245,19 @@ function syringe(hostSel, mode, ui){
   };
   for(const k in MINI){
     const box=$('#'+k+'-quiz-body');
-    if(box) buildQuiz(box, MINI[k], (i,item)=>{
+    if(box) APP.quiz[k] = buildQuiz(box, MINI[k], (i,item)=>{
       showStageHint(k, item.h);
       if(DEMO[k]) DEMO[k](i);
     }, ()=>hideStageHint(k));
-    quizMode(k);
+    APP.mode[k] = quizMode(k);
   }
   /* 「たしかめ問題」＝右側を問題だけにするモード切りかえ */
   function quizMode(k){
     const btn=$('#'+k+'-quiz-btn'), card=$('#'+k+'-quiz'), matBtn=$('#'+k+'-mat-btn');
-    if(!btn||!card) return;
+    if(!btn||!card) return null;
     const side=card.parentElement;
     const others=[...side.children].filter(el=>el!==card && !el.classList.contains('bottom'));
-    btn.addEventListener('click',()=>{
-      const on=card.classList.contains('hidden');   // これから開く
+    function setOn(on){
       card.classList.toggle('hidden',!on);
       card.classList.toggle('quizfull',on);
       others.forEach(el=>{ el.style.display = on?'none':''; });
@@ -2263,10 +2265,322 @@ function syringe(hostSel, mode, ui){
       btn.classList.toggle('inquiz',on);
       btn.textContent = on?'実験にもどる':'たしかめ問題';
       if(!on) hideStageHint(k);
-    });
+    }
+    btn.addEventListener('click',()=>setOn(card.classList.contains('hidden')));   // hidden なら これから開く
+    return { open:()=>setOn(true), close:()=>setOn(false), isOn:()=>!card.classList.contains('hidden') };
   }
 })();
+
+/* 📝テストの練習（下の別の <script>）から使う入口 */
+window.TojiApp = Object.assign(APP, {
+  tabs, SFX, popMaru, hideStageHint,
+  PANEL:{c:0,a:1,w:2,b:3,g:4,f:5,q:6}
+});
 })();
 </script>
+<!-- ============================================================
+     📝 テストの 練習 ①せってい（ここだけ 直せば よい）
+     ============================================================ -->
+<script>
+window.TEST_SETTEI = {
+  button: '📝 テストの 練習',          // ヘッダーの ボタンの 文字
+  tests: [
+    /* テスト 1つぶん：title（名前）と items（大問の じゅん）
+       items の 1つ：
+         no   … 帯と 結果に 出る 番号（'大問1 ①' など。数字だけなら「1問め」と 出る）
+         tab  … 開く タブ  c=空気でっぽう a=とじこめた空気 w=とじこめた水 b=空気と水
+                           g=水でっぽう f=ふうせん q=まとめ・たしかめ
+         q    … その タブの たしかめ問題の 何問めか（1から 数える）
+         name … 結果に 出す 名前 */
+    { title:'テスト1（空気でっぽう・注射器）', items:[
+      { no:'大問1 ①', tab:'q', q:10, name:'手ごたえと 玉の 飛び方' },
+      { no:'大問1 ②', tab:'c', q:1,  name:'空気の 部分の 長さ' },
+      { no:'大問1 ③', tab:'c', q:2,  name:'前の 玉を おすもの' },
+      { no:'大問2 ①', tab:'a', q:4,  name:'ピストンの おし方' },
+      { no:'大問2 ②', tab:'a', q:5,  name:'目もりで わかること' },
+      { no:'大問3 ①', tab:'a', q:1,  name:'空気の 体積' },
+      { no:'大問3 ②', tab:'a', q:2,  name:'手ごたえ' },
+      { no:'大問3 ③', tab:'a', q:3,  name:'手を 放すと' },
+      { no:'大問4 ①', tab:'w', q:1,  name:'水の ピストンの 位置' },
+      { no:'大問4 ②', tab:'w', q:2,  name:'水の 体積' } ] },
+    { title:'テスト2（空気と水・一輪車）', items:[
+      { no:'大問1 ①', tab:'b', q:3,  name:'空気と 水 半分ずつ（図）' },
+      { no:'大問1 ②', tab:'b', q:4,  name:'その 理由' },
+      { no:'大問2 ①', tab:'a', q:6,  name:'タイヤの 中の 量' },
+      { no:'大問2 ②', tab:'a', q:7,  name:'もとに もどろうと するもの' },
+      { no:'大問2 ③', tab:'a', q:8,  name:'せいしつを 利用した もの' } ] }
+  ],
+  autoNextMs: 3500                     // せいかいの あと、つぎの 大問へ 進むまでの 時間
+};
+</script>
+
+<!-- ============================================================
+     📝 テストの 練習 ②しくみ（とじこめた空気や水 用・test_renshu v1 を もとに）— さわらない
+     本体の window.TojiApp（クイズと たしかめモードの 入口）を つかう。
+     ============================================================ -->
+<script>
+window.TestRun = (function(){
+  'use strict';
+  const S = window.TEST_SETTEI, A = window.TojiApp;
+  const $ = id => document.getElementById(id);
+  if(!A || !A.quiz || !S || !Array.isArray(S.tests)){
+    console.warn('テストの練習：TojiApp か TEST_SETTEI が ないので うごきません'); return null;
+  }
+  const TAB_NAME = {c:'空気でっぽう',a:'とじこめた空気',w:'とじこめた水',b:'空気と水',g:'水でっぽう',f:'ふうせん',q:'まとめ・たしかめ'};
+
+  /* ---- せっていを たしかめる（ない 問題は とばす）---- */
+  const TESTS = S.tests.map(t => ({
+    title: t.title || 'テスト',
+    items: (t.items || []).filter(it => {
+      const qz = it && A.quiz[it.tab];
+      if(qz && it.q >= 1 && it.q <= qz.count) return true;
+      console.warn('テストの練習：「' + (it && it.tab) + '」の ' + (it && it.q) + '問めが ないので とばします（' + t.title + '）');
+      return false;
+    })
+  })).filter(t => t.items.length);
+  if(!TESTS.length){ console.warn('テストの練習：出せる 問題が ありません'); return null; }
+  const WAIT = typeof S.autoNextMs === 'number' ? S.autoNextMs : 3500;
+  const noText = no => /^\d+$/.test(no) ? no + '問め' : no;
+
+  let run = null;     // { t, i, rec:[{st:'todo'|'ok'|'ng'|'skip', hint}], back, wasOn, pos }
+  let timer = 0;
+
+  /* ---- 見た目 ---- */
+  const css = document.createElement('style');
+  css.textContent = `
+#test-mount{position:relative;flex:none;display:flex;align-items:center;margin-bottom:8px}
+#test-btn{flex:none;font:inherit;font-weight:800;cursor:pointer;white-space:nowrap;
+  font-size:clamp(12px,1.9vh,17px);padding:clamp(5px,.9vh,9px) clamp(9px,1.1vw,15px);
+  color:#fff;background:var(--blue);border:2px solid #1268a0;border-radius:10px;box-shadow:0 2px 0 #1268a0}
+#test-btn:hover{filter:brightness(1.07)}
+#test-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:950;background:#fff;
+  border:3px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);
+  flex-direction:column;gap:8px;min-width:280px;max-width:92vw}
+#test-menu.open{display:flex}
+#test-menu button{font:inherit;font-weight:800;font-size:clamp(15px,2.3vh,20px);padding:12px 16px;border-radius:12px;
+  border:2.5px solid #B9DCF2;background:#fff;color:var(--ink);cursor:pointer;display:flex;
+  justify-content:space-between;align-items:center;gap:16px;white-space:nowrap}
+#test-menu button:hover{background:#EEF6FC;border-color:var(--blue)}
+#test-menu small{font-size:.8em;color:var(--sub)}
+#test-bar{display:none;align-items:center;gap:10px;background:#EEF6FC;border:2px solid #B9DCF2;border-radius:12px;
+  padding:4px 5px 4px 12px;font-weight:800;color:#1268a0;white-space:nowrap;font-size:clamp(13px,2vh,19px)}
+#test-dots{letter-spacing:1px;font-variant-numeric:tabular-nums}
+#test-stop{font:inherit;font-weight:800;font-size:.9em;padding:3px 12px;border-radius:9px;
+  border:2px solid var(--line);background:#fff;color:var(--sub);cursor:pointer}
+#test-stop:hover{border-color:var(--orange);color:var(--orange-d)}
+#test-btn:focus-visible,#test-menu button:focus-visible,#test-stop:focus-visible,#test-result button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+body.testing #test-btn{display:none}
+body.testing #test-bar{display:flex}
+body.testing nav .tab{pointer-events:none}
+body.testing nav .tab:not(.on){opacity:.4}
+body.testing .btns.bottom{display:none}
+body.testing .qnav{display:none}
+#test-nav{flex:none;display:flex;align-items:center;gap:clamp(8px,1.2vw,14px);
+  padding-top:clamp(7px,1.2vh,13px);border-top:2px solid var(--line)}
+#test-nav .act{font-size:clamp(14px,2.4vh,22px);padding:clamp(8px,1.5vh,15px) clamp(14px,1.8vw,24px)}
+#test-nav .tpos{font-weight:800;color:#1268a0;font-size:clamp(14px,2.4vh,22px)}
+#test-nav .qsp{flex:1}
+#test-result{display:none;position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:1000;
+  align-items:center;justify-content:center}
+#test-result.show{display:flex}
+#test-result .tr-card{position:relative;background:#fff;border-radius:20px;padding:clamp(16px,3vh,28px) clamp(18px,3vw,34px);
+  box-shadow:0 10px 40px rgba(0,0,0,.3);max-width:94vw;max-height:92vh;overflow:auto;color:var(--ink)}
+#test-result .tr-title{font-size:clamp(20px,3.4vh,30px);font-weight:800;color:#1268a0;text-align:center;margin-bottom:12px}
+#test-result table{border-collapse:collapse;font-size:clamp(14px,2.4vh,21px);font-weight:700;margin:0 auto}
+#test-result td{padding:clamp(4px,.8vh,8px) 12px;border-bottom:2px dashed var(--line);white-space:nowrap}
+#test-result td.no{color:var(--sub)}
+#test-result td.r-ok{color:var(--green-d)}
+#test-result td.r-ng{color:#C33}
+#test-result td.r-sk{color:#A79E8E}
+#test-result .tr-sum{text-align:center;margin-top:14px;font-size:clamp(17px,2.8vh,25px);font-weight:800}
+#test-result .tr-sum b{color:var(--orange-d);font-size:1.35em}
+#test-result .tr-again{text-align:center;margin-top:6px;font-size:clamp(14px,2.2vh,19px);font-weight:800;color:var(--sub)}
+#test-result .tr-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+#test-result .tr-btns .act{font-size:clamp(15px,2.4vh,21px);padding:11px 22px}
+`;
+  document.head.appendChild(css);
+
+  /* ---- ボタン・メニュー・帯（音ボタンの 左）---- */
+  const mount = document.createElement('div');
+  mount.id = 'test-mount';
+  mount.innerHTML =
+      '<button id="test-btn" type="button">' + (S.button || '📝 テストの 練習') + '</button>'
+    + '<div id="test-menu">'
+    +   TESTS.map((t,k) => '<button type="button" data-k="'+k+'">'+t.title+'<small>'+t.items.length+'問</small></button>').join('')
+    + '</div>'
+    + '<div id="test-bar"><span id="test-no"></span><span id="test-dots"></span>'
+    +   '<button id="test-stop" type="button">やめる</button></div>';
+  const snd = $('snd');
+  if(snd) snd.parentNode.insertBefore(mount, snd);
+  else document.querySelector('header').appendChild(mount);
+
+  const tnav = document.createElement('div');           // 問題の 下の ナビ（テスト中だけ）
+  tnav.id = 'test-nav';
+  tnav.innerHTML = '<span class="tpos"></span><span class="qsp"></span><button class="act" type="button" id="test-next"></button>';
+  const nextBtn = tnav.querySelector('#test-next');
+  const res = document.createElement('div');
+  res.id = 'test-result';
+  document.body.appendChild(res);
+
+  $('test-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    if(TESTS.length === 1){ start(0); return; }
+    const m = $('test-menu');
+    m.classList.toggle('open');
+    if(m.classList.contains('open')){                  // せまい 画面で 左に はみ出さないように
+      m.style.left = ''; m.style.right = '';
+      const r = m.getBoundingClientRect(), mr = mount.getBoundingClientRect();
+      if(r.left < 8){ m.style.right = 'auto'; m.style.left = (8 - mr.left) + 'px'; }
+    }
+  });
+  $('test-menu').addEventListener('click', e => {
+    const b = e.target.closest('button[data-k]'); if(!b) return;
+    $('test-menu').classList.remove('open');
+    start(+b.dataset.k);
+  });
+  document.addEventListener('click', e => { if(!e.target.closest('#test-mount')) $('test-menu').classList.remove('open'); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') $('test-menu').classList.remove('open'); });
+  $('test-stop').addEventListener('click', () => stop());
+  nextBtn.addEventListener('click', () => {
+    const r = cur(); if(!r) return;
+    if(r.st === 'todo') r.st = 'skip';                 // こたえる 前なら「とばした」
+    next();
+  });
+
+  /* ---- こたえた／ヒントを 見た を 見はる（いまの 問題の カードの 中だけ）---- */
+  document.addEventListener('click', e => {
+    if(!run || res.classList.contains('show')) return;
+    const card = curCard(); if(!card || !card.contains(e.target)) return;
+    const r = cur();
+    if(e.target.closest('.hint-btn')){ if(r.st === 'todo') r.hint = true; return; }
+    const b = e.target.closest('.opt');
+    if(!b || r.st !== 'todo') return;
+    /* ボタン自身の 処理（本体）は もう 終わっているので、色で 正誤が わかる */
+    if(b.classList.contains('right')){ r.st = 'ok'; clearTimeout(timer); timer = setTimeout(next, WAIT); }
+    else if(b.classList.contains('wrong')) r.st = 'ng';
+    else return;
+    bar(); navBtn();
+  });
+
+  /* ---- 中身 ---- */
+  function cur(){ return run ? run.rec[run.i] : null; }
+  function item(){ return TESTS[run.t].items[run.i]; }
+  function curCard(){ const it = item(); return A.quiz[it.tab].card(it.q - 1); }
+  function bar(){
+    const T = TESTS[run.t], it = item();
+    $('test-no').textContent = '📝 ' + noText(it.no) + '（' + (run.i+1) + '／' + T.items.length + '）';
+    $('test-dots').textContent = run.rec.map((r,i) => r.st==='ok'||r.st==='ng' ? '●' : r.st==='skip' ? '－' : (i===run.i ? '◎' : '○')).join('');
+  }
+  function navBtn(){
+    const b = nextBtn, r = cur(), last = run.i === run.rec.length - 1;
+    const answered = r.st === 'ok' || r.st === 'ng';
+    b.textContent = answered ? (last ? 'けっかを見る ▶' : '次の大問へ ▶') : 'とばす ▶';
+    b.classList.toggle('ghost', !answered);
+    tnav.querySelector('.tpos').textContent = (run.i+1) + ' / ' + run.rec.length;
+  }
+  /* 問題文の 頭の 番号を 大問の 番号に かえる（おわったら もどす）*/
+  function setTitle(on){
+    const card = curCard(); if(!card) return;
+    const qt = card.querySelector('.qt'); if(!qt) return;
+    if(on){ if(qt.dataset.orig === undefined) qt.dataset.orig = qt.textContent;
+            qt.textContent = noText(item().no) + '　' + qt.dataset.orig.replace(/^\d+\.\s*/, ''); }
+    else if(qt.dataset.orig !== undefined){ qt.textContent = qt.dataset.orig; delete qt.dataset.orig; }
+  }
+  function leaveCur(){
+    clearTimeout(timer); timer = 0;
+    const it = item();
+    A.quiz[it.tab].leave();
+    setTitle(false);
+  }
+  function go(i){
+    if(run.i >= 0) leaveCur();
+    run.i = i;
+    const it = item(), qz = A.quiz[it.tab];
+    const tab = A.tabs[A.PANEL[it.tab]];
+    if(!tab.classList.contains('on')) tab.click();
+    const nav = tab.parentNode, nr = nav.getBoundingClientRect(), tr = tab.getBoundingClientRect();
+    nav.scrollLeft += (tr.left + tr.width/2) - (nr.left + nr.width/2);   // いまの タブを 見える ところへ
+    if(A.mode[it.tab]) A.mode[it.tab].open();
+    qz.reset(it.q - 1);
+    qz.show(it.q - 1);
+    setTitle(true);
+    const card = curCard();
+    card.closest('.quiz').appendChild(tnav);           // ナビを この問題の 下へ
+    bar(); navBtn();
+  }
+  function start(t){
+    res.classList.remove('show');
+    const keep = run ? { back:run.back, wasOn:run.wasOn, pos:run.pos } : null;
+    if(run){ leaveCur(); run = null; }
+    const back = keep ? keep.back : A.tabs.findIndex(x => x.classList.contains('on'));
+    const wasOn = keep ? keep.wasOn : {}, pos = keep ? keep.pos : {};
+    if(!keep){
+      for(const k in A.mode) if(A.mode[k]) wasOn[k] = A.mode[k].isOn();
+      for(const k in A.quiz) pos[k] = A.quiz[k].current();
+    }
+    run = { t:t, i:-1, rec:TESTS[t].items.map(() => ({ st:'todo', hint:false })), back, wasOn, pos };
+    document.body.classList.add('testing');
+    go(0);
+  }
+  function next(){
+    if(!run) return;
+    if(run.i + 1 < run.rec.length) go(run.i + 1);
+    else finish();
+  }
+  function finish(){
+    leaveCur();
+    const T = TESTS[run.t];
+    let ok = 0;
+    const rows = T.items.map((it,i) => {
+      const r = run.rec[i];
+      let tx, c;
+      if(r.st === 'ok'){ tx = '⭕ せいかい'; c = 'r-ok'; ok++; }
+      else if(r.st === 'ng'){ tx = '✕ まちがい'; c = 'r-ng'; }
+      else { tx = 'とばした'; c = 'r-sk'; }
+      return '<tr><td class="no">'+noText(it.no)+'</td><td>'+(it.name || TAB_NAME[it.tab])+'</td><td class="'+c+'">'+tx+'</td><td>'+(r.hint ? '💡' : '')+'</td></tr>';
+    }).join('');
+    const again = T.items.map((it,i) => run.rec[i].st !== 'ok' ? noText(it.no) : '').filter(Boolean);
+    res.innerHTML = '<div class="tr-card">'
+      + '<div class="tr-title">📝 '+T.title+'　おわり！</div>'
+      + '<table>'+rows+'</table>'
+      + '<div class="tr-sum">せいかい　<b>'+ok+'</b> ／ '+T.items.length+'</div>'
+      + (again.length ? '<div class="tr-again">もう一度たしかめよう　→　'+again.join('、')+'</div>'
+                      : '<div class="tr-again">ぜんぶせいかい！　よくがんばりました。</div>')
+      + '<div class="tr-btns"><button class="act" id="test-again" type="button">もう一度</button>'
+      + '<button class="act ghost" id="test-close" type="button">とじる</button></div>'
+      + '</div>';
+    res.classList.add('show');
+    $('test-again').onclick = () => start(run.t);
+    $('test-close').onclick = () => stop();
+    $('test-again').focus();
+    if(ok === T.items.length){ A.SFX.right(); A.popMaru(res.querySelector('.tr-card')); }
+  }
+  /* やめる／とじる：テストで つかった 問題を 未回答に もどし、はじめの タブ・モードへ */
+  function stop(){
+    if(!run) return;
+    const R = run;
+    if(!res.classList.contains('show')) leaveCur();
+    run = null;
+    clearTimeout(timer); timer = 0;
+    res.classList.remove('show');
+    document.body.classList.remove('testing');
+    if(tnav.parentNode) tnav.remove();
+    TESTS[R.t].items.forEach(it => A.quiz[it.tab].reset(it.q - 1));
+    for(const k in A.mode) if(A.mode[k] && A.mode[k].isOn() !== !!R.wasOn[k]) (R.wasOn[k] ? A.mode[k].open() : A.mode[k].close());
+    for(const k in A.quiz) if(R.pos[k] !== undefined) A.quiz[k].show(R.pos[k]);
+    const tab = A.tabs[R.back >= 0 ? R.back : 0];
+    if(!tab.classList.contains('on')) tab.click();
+  }
+
+  return {
+    on: () => !!run,
+    start: t => start(t || 0),
+    stop:  () => stop(),
+    record: () => run ? JSON.parse(JSON.stringify(run.rec)) : null
+  };
+})();
+</script>
+<!-- 📝 テストの 練習 ここまで -->
+
 </body>
 </html>
